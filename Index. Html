@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pixel 9 Photography List</title>
+    <style>
+        body { font-family: sans-serif; background: #f0f2f5; padding: 20px; }
+        .card { background: white; max-width: 500px; margin: auto; padding: 20px; border-radius: 15px; shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        h1 { color: #1a73e8; text-align: center; font-size: 24px; }
+        .item { display: flex; align-items: center; padding: 10px; border-bottom: 1px solid #eee; }
+        input[type="checkbox"] { width: 22px; height: 22px; margin-right: 15px; }
+        button { width: 100%; background: #1a73e8; color: white; border: none; padding: 15px; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 20px; }
+        .received-section { margin-top: 30px; background: #e8f0fe; padding: 15px; border-radius: 10px; }
+        .received-item { color: #188038; font-weight: bold; margin-bottom: 5px; }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <h1>Pixel 9 Photography List</h1>
+    <div id="staffList"></div>
+    <button onclick="submitReceived()">Confirm Receipt</button>
+
+    <div class="received-section">
+        <h3>Items Received:</h3>
+        <div id="receivedDisplay">No items received yet.</div>
+    </div>
+</div>
+
+<script>
+    const inventory = [
+        "Sony A7S3-body", "Sony A7R5-body", "Sony A7S3-body 1", "Sony A7M3 2",
+        "Sony Z150 video camera", "24-105-3+1=4", "24-70 G Master lens",
+        "14-35 G Master lens", "85 mm-(auto)", "85 mm-(manual)", "50 mm",
+        "Gimbal-Dji-2", "Gimbal-Dji-5", "Godex-200 Pro", "Godex-500 Pro",
+        "Tripod-Regular", "Tripod Large", "LC 500 light", "RGB light"
+    ];
+
+    // Build the checklist
+    const listDiv = document.getElementById('staffList');
+    inventory.forEach(item => {
+        listDiv.innerHTML += `
+            <div class="item">
+                <input type="checkbox" class="gear-check" value="${item}">
+                <label>${item}</label>
+            </div>`;
+    });
+
+    function submitReceived() {
+        const checkboxes = document.querySelectorAll('.gear-check');
+        let received = [];
+        
+        checkboxes.forEach(box => {
+            if (box.checked) {
+                received.push(box.value);
+            }
+        });
+
+        if (received.length === 0) {
+            alert("Please tick at least one item!");
+            return;
+        }
+
+        // Display the received items
+        const display = document.getElementById('receivedDisplay');
+        display.innerHTML = received.map(item => `<div class="received-item">✓ ${item}</div>`).join('');
+        
+        // Save to memory
+        localStorage.setItem('receivedGear', JSON.stringify(received));
+        alert("List Updated! Check the Received section below.");
+    }
+
+    // Load saved data when page opens
+    window.onload = function() {
+        const saved = JSON.parse(localStorage.getItem('receivedGear'));
+        if (saved) {
+            document.getElementById('receivedDisplay').innerHTML = 
+                saved.map(item => `<div class="received-item">✓ ${item}</div>`).join('');
+        }
+    };
+</script>
+
+</body>
+</html>
